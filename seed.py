@@ -44,13 +44,13 @@ def load_movies():
 
     for row in open("seed_data/u.item"):
         row = row.rstrip()
-        movie_id, title, release_str, video_release_date,\
-        imdb_url, unknown, action, adventure, animation, children,\
-        comedy, crime, documentary, drama, fantasy, film_noir, horror,\
-        musical, mystery, romance, sci_fi, thriller, war, western = row.split("|")
+        movie = row.split("|")
 
+        movie_id = movie[0]
+        title = movie[1]
+        release_str = movie[2]
+        imdb_url = movie[4]
 
-        # remember to ask: since datetime was not NULL, is if statement necessary?
         if release_str:
             released_at = datetime.strptime(release_str, "%d-%b-%Y")
         else:
