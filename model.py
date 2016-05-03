@@ -40,6 +40,12 @@ class Movie(db.Model):
     released_at = db.Column(db.DateTime, nullable=True)
     imdb_url = db.Column(db.String(1000), nullable=True)
 
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<Movie movie_id=%s title=%s released_at=%s imdb_url=%s>" % (
+            self.movie_id, self.title, self.released_at, self.imdb_url)
+
 
 class Rating(db.Model):
     """A rating of ratings website."""
@@ -47,9 +53,23 @@ class Rating(db.Model):
     __tablename__ = "ratings"
 
     rating_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    movie_id = db.Column(db.Integer, nullable=False)
-    user_id = db.Column(db.Integer, nullable=False)
+    # movie_id and user_id have corresponding foreignkeys in movies and users table respectively
+    movie_id = db.Column(db.Integer, db.ForeignKey('movies.movie_id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     score = db.Column(db.Integer, nullable=False)
+
+    # Define relationship to user table
+    # build a bridge, that references back to ratings table
+    user = db.relationship("User", backref=db.backref("ratings", order_by=rating_id))
+
+    # Define relationship to movie table
+    movie = db.relationship("Movie", backref=db.backref("ratings", order_by=rating_id))
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<Rating rating_id=%s movie_id=%s user_id=%s score=%s>" % (
+            self.rating_id, self.movie_id, self.user_id, self.score)
 
 
 ##############################################################################
