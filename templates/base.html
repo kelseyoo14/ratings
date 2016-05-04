@@ -5,10 +5,18 @@
 </head>
 
 <body>
-  Ratings
+  Ratings 
+  <ul>
+  	{% for message in get_flashed_messages() %}
+  	<li>{{ message }}</li>
+  	{% endfor %}
+  </ul>
   <hr>
 
+
   {% block content %} put your content here {% endblock %}
+
+
 
 </body>
 </html>

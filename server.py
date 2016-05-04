@@ -33,6 +33,7 @@ def user_list():
 	return render_template("user_list.html",
 							users=users)
 
+
 @app.route("/show-signin")
 def show_signin():
 	"""This shows you the sign in form."""
@@ -70,21 +71,33 @@ def show_login():
 def process_login():
 	"""Check that password and email match."""
 
+	# import pdb; pdb.set_trace()
+
 	input_email = request.form.get('email')
 	input_password = request.form.get('password')
 	print input_password, input_email
 
-	# import pdb; pdb.set_trace()
+
 
 	check_user = User.query.filter(User.email == input_email).one()
 
 	if check_user.password == input_password:
-		# FIX ME flash and session user id add
 		flash('You were successfully logged in!')
-		# add user id to session
+		# add user id to session, which you can check in Resources > Cookies > localhost
 		session['user_id'] = check_user.user_id
 		return render_template('homepage.html')
+	else:
+		# catch if password and username don't
+		flash("Your email and password didn't match.") 
+		return render_template('login_form.html')
 
+@app.route('/logout')
+def logout():
+	"""Delete the user session. Flash message that they have been logged out."""
+	# this removes entire session dictionary
+	session.clear()
+	flash("You've been logged out.")
+	return render_template("homepage.html")
 
 
 
