@@ -34,14 +34,14 @@ def user_list():
 							users=users)
 
 
-@app.route("/show-signin")
-def show_signin():
-	"""This shows you the sign in form."""
+@app.route("/signup")
+def show_signup():
+	"""This shows you the sign up form."""
 
 	return render_template("signin_form.html")
 
-@app.route("/process-signin", methods=['POST'])
-def process_signin():
+@app.route("/signup", methods=['POST'])
+def process_signup():
 	"""Checks if user exists, if not creates new user in db."""
 
 	input_email = request.form.get('email')
@@ -52,22 +52,18 @@ def process_signin():
 	if user_existence == []:
 		new_user = User(email=input_email, password=input_password)
 		db.session.add(new_user)
-	# else:
-		# check password and username match, add userid to session
-		# flash message that tells user they're 'logged in'
-		# add logged out button to page
 
-	db.session.commit()
+		db.session.commit()
 
 	return render_template("homepage.html")
 
-@app.route('/show-login')
+@app.route('/login')
 def show_login():
 	"""Show the login form."""
 
 	return render_template("login_form.html")
 
-@app.route('/process-login', methods=['POST'])
+@app.route('/login', methods=['POST'])
 def process_login():
 	"""Check that password and email match."""
 
@@ -75,19 +71,18 @@ def process_login():
 
 	input_email = request.form.get('email')
 	input_password = request.form.get('password')
-	print input_password, input_email
 
 
+	check_user = User.query.filter(User.email == input_email).first()
 
-	check_user = User.query.filter(User.email == input_email).one()
-
-	if check_user.password == input_password:
+	# check if user exists and then check if password is correct
+	if check_user and check_user.password == input_password:
 		flash('You were successfully logged in!')
 		# add user id to session, which you can check in Resources > Cookies > localhost
 		session['user_id'] = check_user.user_id
 		return render_template('homepage.html')
 	else:
-		# catch if password and username don't
+		# catch if password and username don't match
 		flash("Your email and password didn't match.") 
 		return render_template('login_form.html')
 
