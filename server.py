@@ -79,6 +79,7 @@ def process_login():
 	check_user = User.query.filter(User.email == input_email).one()
 
 	if check_user.password == input_password:
+		# FIX ME flash and session user id add
 		flash('You were successfully logged in!')
 		# add user id to session
 		session['user_id'] = check_user.user_id
