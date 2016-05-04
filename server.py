@@ -33,16 +33,57 @@ def user_list():
 	return render_template("user_list.html",
 							users=users)
 
-@app.route("/show-sigin")
+@app.route("/show-signin")
 def show_signin():
 	"""This shows you the sign in form."""
 
 	return render_template("signin_form.html")
 
-@app.route("/process-signin")
+@app.route("/process-signin", methods=['POST'])
 def process_signin():
 	"""Checks if user exists, if not creates new user in db."""
-	
+
+	input_email = request.form.get('email')
+	input_password = request.form.get('password')
+
+	user_existence = User.query.filter(User.email == input_email).all()
+
+	if user_existence == []:
+		new_user = User(email=input_email, password=input_password)
+		db.session.add(new_user)
+	# else:
+		# check password and username match, add userid to session
+		# flash message that tells user they're 'logged in'
+		# add logged out button to page
+
+	db.session.commit()
+
+	return render_template("homepage.html")
+
+@app.route('/show-login')
+def show_login():
+	"""Show the login form."""
+
+	return render_template("login_form.html")
+
+@app.route('/process-login', methods=['POST'])
+def process_login():
+	"""Check that password and email match."""
+
+	input_email = request.form.get('email')
+	input_password = request.form.get('password')
+	print input_password, input_email
+
+	# import pdb; pdb.set_trace()
+
+	check_user = User.query.filter(User.email == input_email).one()
+
+	if check_user.password == input_password:
+		flash('You were successfully logged in!')
+		# add user id to session
+		session['user_id'] = check_user.user_id
+		return render_template('homepage.html')
+
 
 
 
