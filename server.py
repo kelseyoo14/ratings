@@ -105,9 +105,6 @@ def show_unique_user(user_id):
 	unique_user = User.query.filter(User.user_id == user_id).one()
 
 	user_ratings = unique_user.ratings
-	# FIX ME: change Movie Id to Movie Title in Jinja
-	# movies_rated = u
-	# for movie_id grab movie.title
 
 
 	return render_template("user_page.html", 

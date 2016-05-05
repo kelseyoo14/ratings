@@ -10,7 +10,7 @@
     Movies and User Ratings
     <ul>
       {% for rating in user_ratings %}
-        <li>Movie: {{ rating.movie_id.title }} Rating: {{ rating.score }}</li>
+        <li>Movie: {{ rating.movie.title }} Rating: {{ rating.score }}</li>
       {% endfor %}
     </ul>
 
