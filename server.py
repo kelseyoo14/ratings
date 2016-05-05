@@ -80,7 +80,7 @@ def process_login():
 		flash('You were successfully logged in!')
 		# add user id to session, which you can check in Resources > Cookies > localhost
 		session['user_id'] = check_user.user_id
-		return render_template('homepage.html')
+		return redirect ('/user/%s' % check_user.user_id)
 	else:
 		# catch if password and username don't match
 		flash("Your email and password didn't match.") 
@@ -102,7 +102,7 @@ def show_unique_user(user_id):
 	# import pdb; pdb.set_trace()
 	
 
-	unique_user = User.query.filter(User.user_id == user_id).one()
+	unique_user = User.query.get(user_id)
 
 	user_ratings = unique_user.ratings
 
