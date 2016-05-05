@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h2>{{ unique_movie.title }}'s Details</h2>
+    <ul>
+        <li>Title: {{ unique_movie.title }}</li>
+        <li>Release Date: {{ unique_movie.released_at }}</li>
+        <li>IMDB: {{ unique_movie.imdb_url }}</li>
+    </ul>
+
+    {% if session %}
+        <form action='/process-rating/{{ unique_movie.movie_id }}' method='POST'>
+            Please rate the movie: <input type="number" name="rating" min="1" max="5">
+            <input type="submit">
+        </form>
+    {% endif %}
+    <br>
+
+    Ratings
+    <ul>
+      {% for rating in movie_ratings %}
+        <li>{{ rating.score }}</li>
+      {% endfor %}
+    </ul>
+
+
+
+{% endblock %}

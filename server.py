@@ -90,9 +90,7 @@ def process_rating(mov_id):
 	user_rating = Rating.query.filter(Rating.movie_id == mov_id, Rating.user_id == current_user).first()
 
 	if user_rating:
-		# FIX ME update score in record that already exists
 		user_rating.score = rating
-
 	else:
 		new_rating = Rating(score=rating, 
 							user_id=current_user, 
@@ -100,8 +98,9 @@ def process_rating(mov_id):
 		db.session.add(new_rating)
 
 	db.session.commit()
+	flash("Your rating has been recorded.")
 
-	return render_template('movie_page.html')
+	return redirect ('/movie/%s' % mov_id)
 
 
 
