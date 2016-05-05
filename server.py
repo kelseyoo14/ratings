@@ -34,6 +34,77 @@ def user_list():
 							users=users)
 
 
+# approute <stuff>, stuff will always be a string so you need to cast as int
+@app.route('/user/<int:user_id>')
+def show_unique_user(user_id):
+	"""Make a page that shows age, zipcode and list of movies with ratings for unique user."""
+	
+	# import pdb; pdb.set_trace()
+	
+
+	unique_user = User.query.get(user_id)
+
+	user_ratings = unique_user.ratings
+
+
+	return render_template("user_page.html", 
+					unique_user=unique_user,
+					user_ratings=user_ratings)
+
+
+@app.route("/movies")
+def movie_list():
+	"""Show list of movies ordered by title."""
+
+	movies = Movie.query.order_by('title').all()
+
+	return render_template("movie_list.html",
+							movies=movies)
+
+@app.route('/movie/<int:movie_id>')
+def show_unique_movie(movie_id):
+	"""Make a page that shows information for a unique movie including
+		a list of all the ratings that movie has received."""
+	
+	# import pdb; pdb.set_trace()
+	
+
+	unique_movie = Movie.query.get(movie_id)
+
+	movie_ratings = unique_movie.ratings
+
+
+	return render_template("movie_page.html", 
+					unique_movie=unique_movie,
+					movie_ratings=movie_ratings)
+
+@app.route('/process-rating/<int:mov_id>', methods=['POST'])
+def process_rating(mov_id):
+	"""This updates existing rating or adds new rating."""
+
+	# import pdb; pdb.set_trace()
+
+	rating = request.form.get('rating')
+	current_user = session['user_id']
+
+	user_rating = Rating.query.filter(Rating.movie_id == mov_id, Rating.user_id == current_user).first()
+
+	if user_rating:
+		# FIX ME update score in record that already exists
+		user_rating.score = rating
+
+	else:
+		new_rating = Rating(score=rating, 
+							user_id=current_user, 
+							movie_id=mov_id)
+		db.session.add(new_rating)
+
+	db.session.commit()
+
+	return render_template('movie_page.html')
+
+
+
 @app.route("/signup")
 def show_signup():
 	"""This shows you the sign up form."""
@@ -94,22 +165,6 @@ def logout():
 	flash("You've been logged out.")
 	return render_template("homepage.html")
 
-# approute <stuff>, stuff will always be a string so you need to cast as int
-@app.route('/user/<int:user_id>')
-def show_unique_user(user_id):
-	"""Make a page that shows age, zipcode and list of movies with ratings for unique user."""
-	
-	# import pdb; pdb.set_trace()
-	
-
-	unique_user = User.query.get(user_id)
-
-	user_ratings = unique_user.ratings
-
-
-	return render_template("user_page.html", 
-					unique_user=unique_user,
-					user_ratings=user_ratings)
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
