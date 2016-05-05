@@ -94,7 +94,25 @@ def logout():
 	flash("You've been logged out.")
 	return render_template("homepage.html")
 
+# approute <stuff>, stuff will always be a string so you need to cast as int
+@app.route('/user/<int:user_id>')
+def show_unique_user(user_id):
+	"""Make a page that shows age, zipcode and list of movies with ratings for unique user."""
+	
+	# import pdb; pdb.set_trace()
+	
 
+	unique_user = User.query.filter(User.user_id == user_id).one()
+
+	user_ratings = unique_user.ratings
+	# FIX ME: change Movie Id to Movie Title in Jinja
+	# movies_rated = u
+	# for movie_id grab movie.title
+
+
+	return render_template("user_page.html", 
+					unique_user=unique_user,
+					user_ratings=user_ratings)
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
