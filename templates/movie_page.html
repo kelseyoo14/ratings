@@ -1,12 +1,23 @@
 {% extends 'base.html' %}
 {% block content %}
+    
+    <a href="/movies">Back to Movies List</a>
 
     <h2>{{ unique_movie.title }}'s Details</h2>
     <ul>
         <li>Title: {{ unique_movie.title }}</li>
         <li>Release Date: {{ unique_movie.released_at }}</li>
-        <li>IMDB: {{ unique_movie.imdb_url }}</li>
+        <li><a href="{{ unique_movie.imdb_url }}">IMDB Page</a></li>
     </ul>
+
+    <br>
+
+    <p>Average rating: {{ average }}</p>
+    {% if prediction %}
+        <p>We predict you will rate this movie {{ prediction }}.</p>
+    {% endif %}
+
+    <br>
 
     {% if session %}
         <form action='/process-rating/{{ unique_movie.movie_id }}' method='POST'>
@@ -14,11 +25,17 @@
             <input type="submit">
         </form>
     {% endif %}
+
+    <br>
+
+    {{ beratement }}
+
+    <br>
     <br>
 
     Ratings
     <ul>
-      {% for rating in movie_ratings %}
+      {% for rating in unique_movie.ratings %}
         <li>{{ rating.score }}</li>
       {% endfor %}
     </ul>
